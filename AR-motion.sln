@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AR-motion", "Assembly-CSharp.csproj", "{56237017-5068-E885-E8A4-4FE1678D3CEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AR-motion", "Assembly-CSharp-Editor.csproj", "{CEA4F4E4-65B8-98AF-C86C-553BCAC3524D}"
+EndProject
+Project("{6AA8824C-FA4D-A8E3-31EB-5791DE876D63}") = "AR-motion", "Assembly-UnityScript-Editor-firstpass.unityproj", "{158FAACF-A849-8CC9-C83D-48F73B4B4C6B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56237017-5068-E885-E8A4-4FE1678D3CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56237017-5068-E885-E8A4-4FE1678D3CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56237017-5068-E885-E8A4-4FE1678D3CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56237017-5068-E885-E8A4-4FE1678D3CEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEA4F4E4-65B8-98AF-C86C-553BCAC3524D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEA4F4E4-65B8-98AF-C86C-553BCAC3524D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEA4F4E4-65B8-98AF-C86C-553BCAC3524D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEA4F4E4-65B8-98AF-C86C-553BCAC3524D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{158FAACF-A849-8CC9-C83D-48F73B4B4C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{158FAACF-A849-8CC9-C83D-48F73B4B4C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{158FAACF-A849-8CC9-C83D-48F73B4B4C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{158FAACF-A849-8CC9-C83D-48F73B4B4C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
