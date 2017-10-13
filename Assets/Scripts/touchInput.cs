@@ -9,13 +9,13 @@ public class touchInput : MonoBehaviour {
 	public Text posText;
 	private Color posColor = new Color(0f, 1.0f, 0f, 1.0f);
 	private Material posColored;
+	private string ray_hit = "NO HIT";
 	void Start() {
 		posText = GameObject.Find ("Position").GetComponent<Text> ();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		
 		// Attach this script to a trackable object
 		// Create a plane that matches the target plane
 		Plane targetPlane = new Plane(transform.up, transform.position);
@@ -33,11 +33,28 @@ public class touchInput : MonoBehaviour {
 
 				RaycastHit hit;
 				// IMPLENTERA HIT
-				/*if (Physics.Raycast (ray, out hit, 2)) {
-					if (hit.collider.gameObject.GetType == Tile && hit.collider != null) {
+				if (Physics.Raycast (ray, out hit, 2)) {
+					/*if (hit.collider.gameObject.GetType == Tile && hit.collider != null) {
 						Destroy (init.I.gameObject.GetInstanceID);
+					}*/
+					if (hit.collider != null) {
+						ray_hit = "HIT AT: " + hit.collider.gameObject.transform.position.ToString ();
+						Destroy (hit.transform.gameObject);
 					}
-				}*/
+				}
+
+				// Just to write out the coords of the touch input on the target plane
+				float vX = planePoint.x;
+				float vZ = planePoint.z;
+				posText.text = "vX: " + vX.ToString() + "\n" + 
+					"vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString() + "\n" + ray_hit;
+				
+				//Destroy (pos, 5.0f);
+			}
+		}
+	}
+}
+
 				/*// Creates and gameobject (cube) and makes it green, 
 				// used to mark out the user touch position
 				GameObject pos = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -47,14 +64,3 @@ public class touchInput : MonoBehaviour {
 				pos.transform.parent = transform;
 				pos.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 				pos.transform.position = planePoint;*/
-
-				// Just to write out the coords of the touch input on the target plane
-				float vX = planePoint.x;
-				float vZ = planePoint.z;
-				posText.text = "vX: " + vX.ToString() + "\n" + 
-					"vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString();
-				//Destroy (pos, 5.0f);
-			}
-		}
-	}
-}
