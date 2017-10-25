@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour {
 
+	public bool isMined = false;
 	// Use this for initialization
 	void Start () {
 		

@@ -9,8 +9,10 @@ public class init : MonoBehaviour {
 	public int numberOfTiles = 10;
 	public float distanceBetweenTiles = 0.01f;
 	public int tilesPerRow = 4;
-	public bool isTouched = false;
+	public int numberOfMines = 5;
 	static Tile[] tilesAll;
+	static ArrayList tilesMined;
+	static ArrayList tilesUnmined;
 
 	// Use this for initialization
 	void Start () {
@@ -19,6 +21,7 @@ public class init : MonoBehaviour {
 
 	void CreateTiles(){
 		tilesAll = new Tile[numberOfTiles];
+
 		float xOffset = 0.0f;
 		float zOffset = 0.0f;
 		for (int tilesCreated = 0; tilesCreated < numberOfTiles; tilesCreated++) {
@@ -30,15 +33,22 @@ public class init : MonoBehaviour {
 				}
 				xOffset = 0;
 			}
-			Tile newTile = Instantiate (tilePrefab,new Vector3(transform.position.x + (xOffset-0.25f), 0.1f, transform.position.z + (zOffset-0.15f)), transform.rotation);
+			Tile newTile = (Tile)Instantiate (tilePrefab,new Vector3(transform.position.x + (xOffset-0.25f), 0.1f, transform.position.z + (zOffset-0.15f)), transform.rotation);
 			tilesAll [tilesCreated] = newTile;
+			AssignMines ();
 		}
 	}
-	// Update is called once per frame
-	void Update () {
-		if (isTouched) {
-			Destroy (tilePrefab);
-			isTouched = false;
+
+	void AssignMines(){
+		tilesUnmined = new ArrayList(tilesAll);
+		tilesMined = new ArrayList ();
+		for(int minesAssigned = 0; minesAssigned < numberOfMines; minesAssigned++){
+			Tile currentTile = (Tile)tilesUnmined [Random.Range (0, tilesUnmined.Count)];
+			currentTile.GetComponent<Tile> ().isMined = true;
+			//Add it to the tiles mined
+			tilesMined.Add (currentTile);
+			//Remove it from the unmined tiles
+			tilesUnmined.Remove(currentTile);
 		}
 	}
 }
