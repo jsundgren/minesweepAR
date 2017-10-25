@@ -48,9 +48,9 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\ARGUI.cs" />
      <Compile Include="Assets\Scripts\CameraFocus.cs" />
+     <Compile Include="Assets\Scripts\Grid.cs" />
      <Compile Include="Assets\Scripts\HUDFPS.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
-     <Compile Include="Assets\Scripts\init.cs" />
      <Compile Include="Assets\Scripts\touchInput.cs" />
      <Compile Include="Assets\Vuforia\Scripts\BackgroundPlaneBehaviour.cs" />
      <Compile Include="Assets\Vuforia\Scripts\CloudRecoBehaviour.cs" />

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class touchInput : MonoBehaviour {
 
-
+	public Text number;
 	public Text posText;
 	private Material posColored;
 	private string ray_hit = "NO HIT";
@@ -35,6 +35,7 @@ public class touchInput : MonoBehaviour {
 					if (hit.collider != null) {
 							ray_hit = "HIT AT: " + hit.collider.gameObject.transform.position.ToString ();
 							Destroy (hit.transform.gameObject);
+							Instantiate(number,new Vector3(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.y, hit.collider.gameObject.transform.position.z));
 					}
 				}
 				// Just to write out the coords of the touch input on the target plane
