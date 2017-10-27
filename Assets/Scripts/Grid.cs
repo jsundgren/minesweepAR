@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class Grid : MonoBehaviour {
 	public Tile tilePrefab;
-	public int numberOfTiles = 10;
-	public float distanceBetweenTiles = 0.01f;
-	public int tilesPerRow = 4;
+	public int numberOfTiles = 0;
+	public float distanceBetweenTiles = 0.0f;
+	public int tilesPerRow = 0;
 	public int numberOfMines = 5;
 
 	public static Tile[] tilesAll;
@@ -33,12 +33,12 @@ public class Grid : MonoBehaviour {
 				}
 				xOffset = 0;
 			}
-			Tile newTile = (Tile)Instantiate (tilePrefab,new Vector3(transform.position.x + (xOffset-0.25f), 0.1f, transform.position.z + (zOffset-0.15f)), transform.rotation);
-			tilesAll [tilesCreated] = newTile;
+			Tile newTile = Instantiate (tilePrefab,new Vector3(transform.position.x + (xOffset-0.25f), 0.1f, transform.position.z + (zOffset-0.15f)), transform.rotation);
 			newTile.ID = tilesCreated;
 			newTile.tilesPerRow = tilesPerRow;
-			AssignMines ();
+			tilesAll [tilesCreated] = newTile;
 		}
+		AssignMines ();
 	}
 
 	void AssignMines(){

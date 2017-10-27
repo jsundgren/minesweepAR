@@ -4,15 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class touchInput : MonoBehaviour {
-
-	public Text number;
 	public Text posText;
 	private Material posColored;
 	private string ray_hit = "NO HIT";
 //	private float hold_time = 0.5f;
 	private float count_time = 0.0f;
+	GameObject hitCube;
+
 	void Start() {
 		posText = GameObject.Find ("Position").GetComponent<Text> ();
+		hitCube = Resources.Load("leifCube") as GameObject;
 	}
 
 	// Update is called once per frame
@@ -23,7 +24,7 @@ public class touchInput : MonoBehaviour {
 
 		// When user touch the screen
 		foreach (Touch touch in Input.touches) {
-			if (touch.phase == TouchPhase.Stationary) {
+			if (touch.phase == TouchPhase.Began) {
 				count_time += touch.deltaTime;
 				//Creates ray and send to the target plane where the user touch the screen
 				Ray ray = Camera.main.ScreenPointToRay(touch.position);
@@ -33,9 +34,12 @@ public class touchInput : MonoBehaviour {
 				RaycastHit hit;
 				if (Physics.Raycast (ray, out hit, 2)) {
 					if (hit.collider != null) {
-							ray_hit = "HIT AT: " + hit.collider.gameObject.transform.position.ToString ();
-							Destroy (hit.transform.gameObject);
-							Instantiate(number,new Vector3(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.y, hit.collider.gameObject.transform.position.z));
+						ray_hit = "HIT AT: " + hit.collider.gameObject.transform.position.ToString ();
+						Destroy (hit.transform.gameObject);
+						GameObject test = Instantiate (hit.collider.gameObject, new Vector3 (hit.collider.gameObject.transform.position.x, 
+							                   hit.collider.gameObject.transform.position.y, 
+							                   hit.collider.gameObject.transform.position.z), hit.transform.rotation);
+						test.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
 					}
 				}
 				// Just to write out the coords of the touch input on the target plane

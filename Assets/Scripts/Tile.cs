@@ -77,10 +77,10 @@ public class Tile : MonoBehaviour {
 			}
 		}
 
-		displayText.text = adjacentMines.ToString ();
+		//displayText.text = adjacentMines.ToString ();
 
 		if (adjacentMines <= 0) {
-			displayText.text = "";
+			//displayText.text = " ";
 		}
 	}
 }
