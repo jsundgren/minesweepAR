@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile : MonoBehaviour {
-
+	public static Tile TE;
 	public bool isMined = false;
+	public GameObject displayFlag;
 	public int tilesPerRow;
 	public int ID;
 
@@ -25,7 +26,9 @@ public class Tile : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		displayFlag.GetComponent<Renderer>().enabled = false;
+		displayText.GetComponent<Renderer>().enabled = false;
+
 		if(inBounds(Grid.tilesAll, ID + tilesPerRow)) { 
 			tileUpper = Grid.tilesAll[ID + tilesPerRow]; 
 			adjacentTiles.Add (tileUpper);
@@ -77,10 +80,20 @@ public class Tile : MonoBehaviour {
 			}
 		}
 
-		//displayText.text = adjacentMines.ToString ();
+		displayText.text = adjacentMines.ToString ();
 
 		if (adjacentMines <= 0) {
-			//displayText.text = " ";
+			displayText.text = "";
+		}
+	}
+
+	public void setFlag(){
+		if (state == "idle") {
+			state = "flagged";
+			displayFlag.GetComponent<Renderer>().enabled = true;
+		}else if(state == "flagged"){
+			state = "idle";
+			displayFlag.GetComponent<Renderer>().enabled = false;
 		}
 	}
 }

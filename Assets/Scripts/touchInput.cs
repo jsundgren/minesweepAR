@@ -4,16 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class touchInput : MonoBehaviour {
+	public static touchInput TI;
 	public Text posText;
 	private Material posColored;
-	private string ray_hit = "NO HIT";
-//	private float hold_time = 0.5f;
+	private float hold_time = 0.5f;
 	private float count_time = 0.0f;
-	GameObject hitCube;
 
 	void Start() {
 		posText = GameObject.Find ("Position").GetComponent<Text> ();
-		hitCube = Resources.Load("leifCube") as GameObject;
 	}
 
 	// Update is called once per frame
@@ -24,35 +22,50 @@ public class touchInput : MonoBehaviour {
 
 		// When user touch the screen
 		foreach (Touch touch in Input.touches) {
-			if (touch.phase == TouchPhase.Began) {
-				count_time += touch.deltaTime;
+			count_time += touch.deltaTime;
+			switch (touch.phase){
+			case TouchPhase.Stationary:
 				//Creates ray and send to the target plane where the user touch the screen
-				Ray ray = Camera.main.ScreenPointToRay(touch.position);
+				Ray ray = Camera.main.ScreenPointToRay (touch.position);
 				float dist = 0.0f;
-				targetPlane.Raycast(ray, out dist);
-				Vector3 planePoint = ray.GetPoint(dist);
+				targetPlane.Raycast (ray, out dist);
 				RaycastHit hit;
+				//planePoint = ray.GetPoint (dist);
 				if (Physics.Raycast (ray, out hit, 2)) {
-					if (hit.collider != null) {
-						ray_hit = "HIT AT: " + hit.collider.gameObject.transform.position.ToString ();
-						Destroy (hit.transform.gameObject);
-						GameObject test = Instantiate (hit.collider.gameObject, new Vector3 (hit.collider.gameObject.transform.position.x, 
-							                   hit.collider.gameObject.transform.position.y, 
-							                   hit.collider.gameObject.transform.position.z), hit.transform.rotation);
-						test.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+					if (hit.collider != null && count_time >= hold_time) {
+						Tile.TE.setFlag ();
 					}
 				}
-				// Just to write out the coords of the touch input on the target plane
+				count_time = 0;
+				break;
+			case TouchPhase.Ended:
+				if (count_time < hold_time) {
+					//Creates ray and send to the target plane where the user touch the screen
+					ray = Camera.main.ScreenPointToRay (touch.position);
+					dist = 0.0f;
+					targetPlane.Raycast (ray, out dist);
+					//Vector3 planePoint = ray.GetPoint (dist);
+					if (Physics.Raycast (ray, out hit, 2)) {
+						if (hit.collider != null) {
+							Destroy (hit.transform.gameObject);
+						}
+					}
+				}
+				count_time = 0;
+				break;
+			}
+
+				/*// Just to write out the coords of the touch input on the target plane
 				float vX = planePoint.x;
 				float vZ = planePoint.z;
-				posText.text = "vX: " + vX.ToString() + "\n" + 
-				"vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString() + "\n" + ray_hit;
+				posText.text = "vX: " + vX.ToString () + "\n" +
+				"vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString ();*/
 			}
 		}
 	}
-}
 
-						/*else if (count_time >= hold_time) {
+
+						/*else 
 							GameObject pos = GameObject.CreatePrimitive (PrimitiveType.Cube);
 							pos.transform.localScale = new Vector3 (0.01f, 0.01f, 0.01f);
 							pos.transform.position = new Vector3 (hit.collider.gameObject.transform.position.x, 
