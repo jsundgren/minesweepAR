@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Tile : MonoBehaviour {
 	public static Tile TE;
@@ -30,37 +31,39 @@ public class Tile : MonoBehaviour {
 		displayText.GetComponent<Renderer>().enabled = false;
 
 		if(inBounds(Grid.tilesAll, ID + tilesPerRow)) { 
-			tileUpper = Grid.tilesAll[ID + tilesPerRow]; 
-			adjacentTiles.Add (tileUpper);
+			tileUpper = Grid.tilesAll[ID + tilesPerRow];
 		}
 		if(inBounds(Grid.tilesAll, ID - tilesPerRow)) { 
-			tileLower = Grid.tilesAll[ID - tilesPerRow]; 
-			adjacentTiles.Add (tileLower);
+			tileLower = Grid.tilesAll[ID - tilesPerRow];
 		}
 		if(inBounds(Grid.tilesAll, ID + 1) && (ID+1) % tilesPerRow != 0) { 
-			tileRight = Grid.tilesAll[ID + 1]; 
-			adjacentTiles.Add (tileRight);
+			tileRight = Grid.tilesAll[ID + 1];
 		}
 		if(inBounds(Grid.tilesAll, ID - 1) && ID % tilesPerRow != 0) { 
-			tileLeft = Grid.tilesAll[ID - 1]; 
-			adjacentTiles.Add (tileLeft);
+			tileLeft = Grid.tilesAll[ID - 1];
 		}
 		if(inBounds(Grid.tilesAll, ID + tilesPerRow + 1) && (ID + tilesPerRow + 1) % tilesPerRow != 0) { 
-			tileUpperRight = Grid.tilesAll[ID + tilesPerRow + 1]; 
-			adjacentTiles.Add (tileUpperRight);
+			tileUpperRight = Grid.tilesAll[ID + tilesPerRow + 1];
 		}
 		if(inBounds(Grid.tilesAll, ID + tilesPerRow - 1) &&     ID % tilesPerRow != 0) { 
-			tileUpperLeft  = Grid.tilesAll[ID + tilesPerRow - 1]; 
-			adjacentTiles.Add (tileUpperLeft);
+			tileUpperLeft  = Grid.tilesAll[ID + tilesPerRow - 1];
 		}
 		if(inBounds(Grid.tilesAll, ID - tilesPerRow + 1) && (ID+1) % tilesPerRow != 0) { 
-			tileLowerRight = Grid.tilesAll[ID - tilesPerRow + 1]; 
-			adjacentTiles.Add (tileLowerRight);
+			tileLowerRight = Grid.tilesAll[ID - tilesPerRow + 1];
 		}
 		if(inBounds(Grid.tilesAll, ID - tilesPerRow - 1) &&     ID % tilesPerRow != 0) { 
 			tileLowerLeft  = Grid.tilesAll[ID - tilesPerRow - 1]; 
-			adjacentTiles.Add (tileLowerLeft);
 		}
+
+		if (tileUpper) {adjacentTiles.Add (tileUpper);}
+		if (tileLower) {adjacentTiles.Add (tileLower);}
+		if (tileLeft) {adjacentTiles.Add (tileLeft);}
+		if (tileRight) {adjacentTiles.Add (tileRight);}
+
+		if (tileUpperLeft) {adjacentTiles.Add (tileUpperLeft);}
+		if (tileUpperRight) {adjacentTiles.Add (tileUpperRight);}
+		if (tileLowerLeft) {adjacentTiles.Add (tileLowerLeft);}
+		if (tileLowerRight) {adjacentTiles.Add (tileLowerRight);}
 
 		countMines ();
 	}
@@ -94,6 +97,59 @@ public class Tile : MonoBehaviour {
 		}else if(state == "flagged"){
 			state = "idle";
 			displayFlag.GetComponent<Renderer>().enabled = false;
+		}
+	}
+
+	public void UncoverTile(){
+		if (!isMined) {
+			state = "uncovered";
+			displayText.GetComponent<Renderer>().enabled = true;
+			GetComponent<Renderer> ().material.color = Color.green;
+			if (adjacentMines == 0) {
+				unCoverAdjacentTiles ();
+			}
+		} else{
+			explode();
+		}
+	}
+
+	void explode(){
+		state = "detonated";
+		GetComponent<Renderer> ().material.color = Color.red;
+		foreach (Tile currentTile in Grid.tilesMined) {
+			currentTile.explodeAll ();
+		}
+		StartCoroutine(wait ());
+		restart ();
+	}
+		
+	void explodeAll(){
+		state = "detonated";
+		GetComponent<Renderer> ().material.color = Color.red;
+	}
+
+	IEnumerator wait(){
+		yield return new WaitForSeconds(5.0f);
+	}
+
+	void restart(){
+		SceneManager.LoadScene ("animation-scene");
+	}
+
+	private void uncoverTileExternal(){
+		state = "uncovered";
+		displayText.GetComponent<Renderer> ().enabled = true;
+		GetComponent<Renderer> ().material.color = Color.green;
+
+	}
+
+	private void unCoverAdjacentTiles(){
+		foreach (Tile currentTile in adjacentTiles) {
+			if (!currentTile.isMined && currentTile.state == "idle" && currentTile.adjacentMines == 0) {
+				currentTile.UncoverTile ();
+			} else if (!currentTile.isMined && currentTile.state == "idle" && currentTile.adjacentMines > 0) {
+				currentTile.uncoverTileExternal ();
+			}
 		}
 	}
 }

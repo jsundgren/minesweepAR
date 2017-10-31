@@ -9,6 +9,10 @@ public class touchInput : MonoBehaviour {
 	private Material posColored;
 	private float hold_time = 0.5f;
 	private float count_time = 0.0f;
+	Vector3 planePoint;
+	public string test = "no access";
+	float magValue = 0.1f;
+
 
 	void Start() {
 		posText = GameObject.Find ("Position").GetComponent<Text> ();
@@ -18,51 +22,43 @@ public class touchInput : MonoBehaviour {
 	void Update () {
 		// Attach this script to a trackable object
 		// Create a plane that matches the target plane
-		Plane targetPlane = new Plane(transform.up, transform.position);
+		Plane targetPlane = new Plane (transform.up, transform.position);
 
 		// When user touch the screen
 		foreach (Touch touch in Input.touches) {
-			count_time += touch.deltaTime;
-			switch (touch.phase){
-			case TouchPhase.Stationary:
-				//Creates ray and send to the target plane where the user touch the screen
+			if (touch.phase == TouchPhase.Ended) {
+				count_time += touch.deltaTime;
 				Ray ray = Camera.main.ScreenPointToRay (touch.position);
 				float dist = 0.0f;
 				targetPlane.Raycast (ray, out dist);
 				RaycastHit hit;
-				//planePoint = ray.GetPoint (dist);
-				if (Physics.Raycast (ray, out hit, 2)) {
-					if (hit.collider != null && count_time >= hold_time) {
-						Tile.TE.setFlag ();
-					}
-				}
-				count_time = 0;
-				break;
-			case TouchPhase.Ended:
-				if (count_time < hold_time) {
-					//Creates ray and send to the target plane where the user touch the screen
-					ray = Camera.main.ScreenPointToRay (touch.position);
-					dist = 0.0f;
-					targetPlane.Raycast (ray, out dist);
-					//Vector3 planePoint = ray.GetPoint (dist);
+				planePoint = ray.GetPoint (dist);
+			
+				if (touch.phase == TouchPhase.Ended && count_time < hold_time) {
 					if (Physics.Raycast (ray, out hit, 2)) {
-						if (hit.collider != null) {
-							Destroy (hit.transform.gameObject);
+						if (hit.collider != null && hit.transform.GetComponent<Tile> ().state == "idle") {
+							hit.transform.GetComponent<Tile> ().UncoverTile ();
+							count_time = 0;
+						}
+					}
+				}else if(touch.phase == TouchPhase.Stationary || (touch.phase == TouchPhase.Moved && touch.deltaPosition.magnitude < magValue)){
+					if (Physics.Raycast (ray, out hit, 2)) {
+						if (hit.collider != null && count_time >= hold_time) {
+							hit.transform.GetComponent<Tile> ().setFlag ();
+							count_time = 0;
 						}
 					}
 				}
-				count_time = 0;
-				break;
-			}
 
-				/*// Just to write out the coords of the touch input on the target plane
+				// Just to write out the coords of the touch input on the target plane
 				float vX = planePoint.x;
 				float vZ = planePoint.z;
-				posText.text = "vX: " + vX.ToString () + "\n" +
-				"vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString ();*/
+				posText.text = "vX: " + vX.ToString () + "\n" + "vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString ();
+
 			}
 		}
 	}
+}
 
 
 						/*else 
