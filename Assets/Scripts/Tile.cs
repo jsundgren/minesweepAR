@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Tile : MonoBehaviour {
-	public static Tile TE;
 	public bool isMined = false;
 	public GameObject displayFlag;
 	public int tilesPerRow;
@@ -94,6 +93,7 @@ public class Tile : MonoBehaviour {
 		if (state == "idle") {
 			state = "flagged";
 			displayFlag.GetComponent<Renderer>().enabled = true;
+			displayFlag.GetComponent<Renderer> ().material.color = Color.red;
 		}else if(state == "flagged"){
 			state = "idle";
 			displayFlag.GetComponent<Renderer>().enabled = false;

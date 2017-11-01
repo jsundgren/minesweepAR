@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Grid : MonoBehaviour {
-	public static Grid GD;
 	public Tile tilePrefab;
 	public int numberOfTiles = 0;
 	public float distanceBetweenTiles = 0.0f;

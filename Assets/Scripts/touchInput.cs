@@ -4,14 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class touchInput : MonoBehaviour {
-	public static touchInput TI;
 	public Text posText;
 	private Material posColored;
-	private float hold_time = 0.5f;
+	private float hold_time = 1.0f;
 	private float count_time = 0.0f;
 	Vector3 planePoint;
-	public string test = "no access";
-	float magValue = 0.1f;
+	string test = "not touching";
+	float magValue = 1.0f;
 
 
 	void Start() {
@@ -26,14 +25,13 @@ public class touchInput : MonoBehaviour {
 
 		// When user touch the screen
 		foreach (Touch touch in Input.touches) {
-			if (touch.phase == TouchPhase.Ended) {
 				count_time += touch.deltaTime;
 				Ray ray = Camera.main.ScreenPointToRay (touch.position);
 				float dist = 0.0f;
 				targetPlane.Raycast (ray, out dist);
 				RaycastHit hit;
 				planePoint = ray.GetPoint (dist);
-			
+			// 	DOUBLE TOUCHPHASE.ENDED WTF BRO
 				if (touch.phase == TouchPhase.Ended && count_time < hold_time) {
 					if (Physics.Raycast (ray, out hit, 2)) {
 						if (hit.collider != null && hit.transform.GetComponent<Tile> ().state == "idle") {
@@ -53,11 +51,10 @@ public class touchInput : MonoBehaviour {
 				// Just to write out the coords of the touch input on the target plane
 				float vX = planePoint.x;
 				float vZ = planePoint.z;
-				posText.text = "vX: " + vX.ToString () + "\n" + "vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString ();
+				posText.text = "vX: " + vX.ToString () + "\n" + "vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString () + "\n" + test;
 
 			}
 		}
-	}
 }
 
 
