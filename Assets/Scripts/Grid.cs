@@ -4,15 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Grid : MonoBehaviour {
-	public Tile tilePrefab;
-	public int numberOfTiles = 0;
-	public float distanceBetweenTiles = 0.0f;
-	public int tilesPerRow = 0;
-	public int numberOfMines = 5;
+	public Tile tile_prefab;
+	public int number_of_tiles = 0;
+	public float distance_between_tiles = 0.0f;
+	public int tiles_per_row = 0;
+	public int number_of_mines = 5;
 
-	public static Tile[] tilesAll;
-	public static List<Tile> tilesMined;
-	public static List<Tile> tilesUnmined;
+	public static Tile[] tiles_all;
+	public static List<Tile> tiles_mined;
+	public static List<Tile> tiles_unmined;
 
 	// Use this for initialization
 	void Start () {
@@ -20,37 +20,36 @@ public class Grid : MonoBehaviour {
 	}
 
 	void CreateTiles(){
-		tilesAll = new Tile[numberOfTiles];
-
-		float xOffset = 0.0f;
-		float zOffset = 0.0f;
-		for (int tilesCreated = 0; tilesCreated < numberOfTiles; tilesCreated++) {
-			xOffset = xOffset + distanceBetweenTiles;
-			if(tilesCreated % tilesPerRow == 0)
+		tiles_all = new Tile[number_of_tiles];
+		float x_offset = 0.0f;
+		float z_offset = 0.0f;
+		for (int tiles_created = 0; tiles_created < number_of_tiles; tiles_created++) {
+			x_offset = x_offset + distance_between_tiles;
+			if(tiles_created % tiles_per_row == 0)
 			{
-				if (tilesCreated != 0) {
-					zOffset += distanceBetweenTiles;
+				if (tiles_created != 0) {
+					z_offset += distance_between_tiles;
 				}
-				xOffset = 0;
+				x_offset = 0;
 			}
-			Tile newTile = Instantiate (tilePrefab,new Vector3(transform.position.x + (xOffset-0.25f), 0.1f, transform.position.z + (zOffset-0.15f)), transform.rotation);
-			newTile.ID = tilesCreated;
-			newTile.tilesPerRow = tilesPerRow;
-			tilesAll [tilesCreated] = newTile;
+			Tile new_tile = Instantiate (tile_prefab,new Vector3(transform.position.x + (x_offset-0.25f), 0.1f, transform.position.z + (z_offset-0.15f)), transform.rotation);
+			new_tile.ID = tiles_created;
+			new_tile.tiles_per_row = tiles_per_row;
+			tiles_all [tiles_created] = new_tile;
 		}
 		AssignMines ();
 	}
 
 	void AssignMines(){
-		tilesUnmined = new List<Tile>(tilesAll);
-		tilesMined = new List<Tile>();
-		for(int minesAssigned = 0; minesAssigned < numberOfMines; minesAssigned++){
-			Tile currentTile = (Tile)tilesUnmined [Random.Range (0, tilesUnmined.Count)];
-			currentTile.GetComponent<Tile> ().isMined = true;
+		tiles_unmined = new List<Tile>(tiles_all);
+		tiles_mined = new List<Tile>();
+		for(int mines_assigned = 0; mines_assigned < number_of_mines; mines_assigned++){
+			Tile current_tile = (Tile)tiles_unmined [Random.Range (0, tiles_unmined.Count)];
+			current_tile.GetComponent<Tile> ().is_mined = true;
 			//Add it to the tiles mined
-			tilesMined.Add (currentTile);
+			tiles_mined.Add (current_tile);
 			//Remove it from the unmined tiles
-			tilesUnmined.Remove(currentTile);
+			tiles_unmined.Remove(current_tile);
 		}
 	}
 }

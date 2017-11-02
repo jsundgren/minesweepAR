@@ -4,151 +4,148 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Tile : MonoBehaviour {
-	public bool isMined = false;
-	public GameObject displayFlag;
-	public int tilesPerRow;
+	public bool is_mined = false;
+	public GameObject display_flag;
+	public int tiles_per_row;
 	public int ID;
 
-	public Tile tileUpper;
-	public Tile tileLower;
-	public Tile tileLeft;
-	public Tile tileRight;
+	public Tile tile_upper;
+	public Tile tile_lower;
+	public Tile tile_left;
+	public Tile tile_right;
 
-	public Tile tileUpperRight;
-	public Tile tileUpperLeft;
-	public Tile tileLowerRight;
-	public Tile tileLowerLeft;
-	public List<Tile> adjacentTiles = new List<Tile> ();
-	public int adjacentMines = 0;
+	public Tile tile_upper_right;
+	public Tile tile_upper_left;
+	public Tile tile_lower_right;
+	public Tile tile_lower_left;
+	public List<Tile> adjacent_tiles = new List<Tile> ();
+	public int adjacent_mines = 0;
 
-	public TextMesh displayText;
+	public TextMesh display_text;
 	public string state = "idle";
 
 	// Use this for initialization
 	void Start () {
-		displayFlag.GetComponent<Renderer>().enabled = false;
-		displayText.GetComponent<Renderer>().enabled = false;
+		display_flag.GetComponent<Renderer>().enabled = false;
+		display_text.GetComponent<Renderer>().enabled = false;
 
-		if(inBounds(Grid.tilesAll, ID + tilesPerRow)) { 
-			tileUpper = Grid.tilesAll[ID + tilesPerRow];
+		if(InBounds(Grid.tiles_all, ID + tiles_per_row)) { 
+			tile_upper = Grid.tiles_all[ID + tiles_per_row];
 		}
-		if(inBounds(Grid.tilesAll, ID - tilesPerRow)) { 
-			tileLower = Grid.tilesAll[ID - tilesPerRow];
+		if(InBounds(Grid.tiles_all, ID - tiles_per_row)) { 
+			tile_lower = Grid.tiles_all[ID - tiles_per_row];
 		}
-		if(inBounds(Grid.tilesAll, ID + 1) && (ID+1) % tilesPerRow != 0) { 
-			tileRight = Grid.tilesAll[ID + 1];
+		if(InBounds(Grid.tiles_all, ID + 1) && (ID+1) % tiles_per_row != 0) { 
+			tile_right = Grid.tiles_all[ID + 1];
 		}
-		if(inBounds(Grid.tilesAll, ID - 1) && ID % tilesPerRow != 0) { 
-			tileLeft = Grid.tilesAll[ID - 1];
+		if(InBounds(Grid.tiles_all, ID - 1) && ID % tiles_per_row != 0) { 
+			tile_left = Grid.tiles_all[ID - 1];
 		}
-		if(inBounds(Grid.tilesAll, ID + tilesPerRow + 1) && (ID + tilesPerRow + 1) % tilesPerRow != 0) { 
-			tileUpperRight = Grid.tilesAll[ID + tilesPerRow + 1];
+		if(InBounds(Grid.tiles_all, ID + tiles_per_row + 1) && (ID + tiles_per_row + 1) % tiles_per_row != 0) { 
+			tile_upper_right = Grid.tiles_all[ID + tiles_per_row + 1];
 		}
-		if(inBounds(Grid.tilesAll, ID + tilesPerRow - 1) &&     ID % tilesPerRow != 0) { 
-			tileUpperLeft  = Grid.tilesAll[ID + tilesPerRow - 1];
+		if(InBounds(Grid.tiles_all, ID + tiles_per_row - 1) &&     ID % tiles_per_row != 0) { 
+			tile_upper_left  = Grid.tiles_all[ID + tiles_per_row - 1];
 		}
-		if(inBounds(Grid.tilesAll, ID - tilesPerRow + 1) && (ID+1) % tilesPerRow != 0) { 
-			tileLowerRight = Grid.tilesAll[ID - tilesPerRow + 1];
+		if(InBounds(Grid.tiles_all, ID - tiles_per_row + 1) && (ID+1) % tiles_per_row != 0) { 
+			tile_lower_right = Grid.tiles_all[ID - tiles_per_row + 1];
 		}
-		if(inBounds(Grid.tilesAll, ID - tilesPerRow - 1) &&     ID % tilesPerRow != 0) { 
-			tileLowerLeft  = Grid.tilesAll[ID - tilesPerRow - 1]; 
+		if(InBounds(Grid.tiles_all, ID - tiles_per_row - 1) &&     ID % tiles_per_row != 0) { 
+			tile_lower_left  = Grid.tiles_all[ID - tiles_per_row - 1]; 
 		}
 
-		if (tileUpper) {adjacentTiles.Add (tileUpper);}
-		if (tileLower) {adjacentTiles.Add (tileLower);}
-		if (tileLeft) {adjacentTiles.Add (tileLeft);}
-		if (tileRight) {adjacentTiles.Add (tileRight);}
+		if(tile_upper){adjacent_tiles.Add (tile_upper);}
+		if(tile_lower){adjacent_tiles.Add (tile_lower);}
+		if(tile_left){adjacent_tiles.Add (tile_left);}
+		if(tile_right){adjacent_tiles.Add (tile_right);}
 
-		if (tileUpperLeft) {adjacentTiles.Add (tileUpperLeft);}
-		if (tileUpperRight) {adjacentTiles.Add (tileUpperRight);}
-		if (tileLowerLeft) {adjacentTiles.Add (tileLowerLeft);}
-		if (tileLowerRight) {adjacentTiles.Add (tileLowerRight);}
+		if(tile_upper_left){adjacent_tiles.Add (tile_upper_left);}
+		if(tile_upper_right){adjacent_tiles.Add (tile_upper_right);}
+		if(tile_lower_left){adjacent_tiles.Add (tile_lower_left);}
+		if(tile_lower_right){adjacent_tiles.Add (tile_lower_right);}
 
-		countMines ();
+		CountMines ();
 	}
 	
-	private bool inBounds(Tile[] inputArray, int targetID){
-		if(targetID < 0 || targetID >= inputArray.Length){
+	private bool InBounds(Tile[] input_array, int target_ID){
+		if(target_ID < 0 || target_ID >= input_array.Length){
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	void countMines(){
-		foreach (Tile currentTile in adjacentTiles) {
-			if (currentTile.isMined) {
-				adjacentMines += 1;
+	void CountMines(){
+		foreach (Tile current_tile in adjacent_tiles) {
+			if (current_tile.is_mined) {
+				adjacent_mines += 1;
 			}
 		}
-
-		displayText.text = adjacentMines.ToString ();
-
-		if (adjacentMines <= 0) {
-			displayText.text = "";
+		display_text.text = adjacent_mines.ToString ();
+		if (adjacent_mines <= 0) {
+			display_text.text = "";
 		}
 	}
 
-	public void setFlag(){
+	public void SetFlag(){
 		if (state == "idle") {
 			state = "flagged";
-			displayFlag.GetComponent<Renderer>().enabled = true;
-			displayFlag.GetComponent<Renderer> ().material.color = Color.red;
+			display_flag.GetComponent<Renderer>().enabled = true;
+			display_flag.GetComponent<Renderer> ().material.color = Color.red;
 		}else if(state == "flagged"){
 			state = "idle";
-			displayFlag.GetComponent<Renderer>().enabled = false;
+			display_flag.GetComponent<Renderer>().enabled = false;
 		}
 	}
 
 	public void UncoverTile(){
-		if (!isMined) {
+		if (!is_mined) {
 			state = "uncovered";
-			displayText.GetComponent<Renderer>().enabled = true;
+			display_text.GetComponent<Renderer>().enabled = true;
 			GetComponent<Renderer> ().material.color = Color.green;
-			if (adjacentMines == 0) {
-				unCoverAdjacentTiles ();
+			if (adjacent_mines == 0) {
+				UncoverAdjacentTiles ();
 			}
 		} else{
-			explode();
+			Explode();
 		}
 	}
 
-	void explode(){
+	private void UncoverTileExternal(){
+		state = "uncovered";
+		display_text.GetComponent<Renderer> ().enabled = true;
+		GetComponent<Renderer> ().material.color = Color.green;
+	}
+
+	void Explode(){
 		state = "detonated";
 		GetComponent<Renderer> ().material.color = Color.red;
-		foreach (Tile currentTile in Grid.tilesMined) {
-			currentTile.explodeAll ();
+		foreach (Tile current_tile in Grid.tiles_mined) {
+			current_tile.ExplodeAll ();
 		}
-		StartCoroutine(wait ());
-		restart ();
+		StartCoroutine(Wait ());
+		Restart ();
 	}
 		
-	void explodeAll(){
+	void ExplodeAll(){
 		state = "detonated";
 		GetComponent<Renderer> ().material.color = Color.red;
 	}
 
-	IEnumerator wait(){
+	IEnumerator Wait(){
 		yield return new WaitForSeconds(5.0f);
 	}
 
-	void restart(){
+	void Restart(){
 		SceneManager.LoadScene ("animation-scene");
 	}
 
-	private void uncoverTileExternal(){
-		state = "uncovered";
-		displayText.GetComponent<Renderer> ().enabled = true;
-		GetComponent<Renderer> ().material.color = Color.green;
-
-	}
-
-	private void unCoverAdjacentTiles(){
-		foreach (Tile currentTile in adjacentTiles) {
-			if (!currentTile.isMined && currentTile.state == "idle" && currentTile.adjacentMines == 0) {
-				currentTile.UncoverTile ();
-			} else if (!currentTile.isMined && currentTile.state == "idle" && currentTile.adjacentMines > 0) {
-				currentTile.uncoverTileExternal ();
+	private void UncoverAdjacentTiles(){
+		foreach (Tile current_tile in adjacent_tiles) {
+			if (!current_tile.is_mined && current_tile.state == "idle" && current_tile.adjacent_mines == 0) {
+				current_tile.UncoverTile ();
+			} else if (!current_tile.is_mined && current_tile.state == "idle" && current_tile.adjacent_mines > 0) {
+				current_tile.UncoverTileExternal ();
 			}
 		}
 	}

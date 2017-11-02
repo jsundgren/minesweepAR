@@ -4,68 +4,58 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class touchInput : MonoBehaviour {
-	public Text posText;
-	private Material posColored;
+	public Text pos_text;
 	private float hold_time = 1.0f;
 	private float count_time = 0.0f;
-	Vector3 planePoint;
-	string test = "not touching";
-	float magValue = 1.0f;
+	Vector3 plane_point;
+	float mag_value = 1.0f;
 
 
 	void Start() {
-		posText = GameObject.Find ("Position").GetComponent<Text> ();
+		pos_text = GameObject.Find ("Position").GetComponent<Text> ();
 	}
 
 	// Update is called once per frame
 	void Update () {
 		// Attach this script to a trackable object
 		// Create a plane that matches the target plane
-		Plane targetPlane = new Plane (transform.up, transform.position);
+		Plane target_plane = new Plane (transform.up, transform.position);
 
 		// When user touch the screen
 		foreach (Touch touch in Input.touches) {
-				count_time += touch.deltaTime;
-				Ray ray = Camera.main.ScreenPointToRay (touch.position);
-				float dist = 0.0f;
-				targetPlane.Raycast (ray, out dist);
-				RaycastHit hit;
-				planePoint = ray.GetPoint (dist);
-			// 	DOUBLE TOUCHPHASE.ENDED WTF BRO
-				if (touch.phase == TouchPhase.Ended && count_time < hold_time) {
-					if (Physics.Raycast (ray, out hit, 2)) {
-						if (hit.collider != null && hit.transform.GetComponent<Tile> ().state == "idle") {
-							hit.transform.GetComponent<Tile> ().UncoverTile ();
-							count_time = 0;
-						}
-					}
-				}else if(touch.phase == TouchPhase.Stationary || (touch.phase == TouchPhase.Moved && touch.deltaPosition.magnitude < magValue)){
-					if (Physics.Raycast (ray, out hit, 2)) {
-						if (hit.collider != null && count_time >= hold_time) {
-							hit.transform.GetComponent<Tile> ().setFlag ();
-							count_time = 0;
-						}
+			count_time += touch.deltaTime;
+			Ray ray = Camera.main.ScreenPointToRay (touch.position);
+			float dist = 0.0f;
+			target_plane.Raycast (ray, out dist);
+			RaycastHit hit;
+			plane_point = ray.GetPoint (dist);
+		// 	DOUBLE TOUCHPHASE.ENDED WTF BRO
+			if (touch.phase == TouchPhase.Ended && count_time < hold_time) {
+				if (Physics.Raycast (ray, out hit, 2)) {
+					if (hit.collider != null && hit.transform.GetComponent<Tile> ().state == "idle") {
+						hit.transform.GetComponent<Tile> ().UncoverTile ();
+						count_time = 0;
 					}
 				}
-
-				// Just to write out the coords of the touch input on the target plane
-				float vX = planePoint.x;
-				float vZ = planePoint.z;
-				posText.text = "vX: " + vX.ToString () + "\n" + "vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString () + "\n" + test;
-
+			}else if(touch.phase == TouchPhase.Stationary || (touch.phase == TouchPhase.Moved && touch.deltaPosition.magnitude < mag_value)){
+				if (Physics.Raycast (ray, out hit, 2)) {
+					if (hit.collider != null && count_time >= hold_time) {
+						hit.transform.GetComponent<Tile> ().SetFlag ();
+						count_time = 0;
+					}
+				}
 			}
 		}
+	}
 }
 
 
-						/*else 
-							GameObject pos = GameObject.CreatePrimitive (PrimitiveType.Cube);
-							pos.transform.localScale = new Vector3 (0.01f, 0.01f, 0.01f);
-							pos.transform.position = new Vector3 (hit.collider.gameObject.transform.position.x, 
-								hit.collider.gameObject.transform.position.y + 0.15f, 
-								hit.collider.gameObject.transform.position.z);
-						}
-						*/
+
+			    // Just to write out the coords of the touch input on the target plane
+				/*float vX = planePoint.x;
+				float vZ = planePoint.z;
+				posText.text = "vX: " + vX.ToString () + "\n" + "vZ: " + vZ.ToString () + "\n" + "Dist: " + dist.ToString ();*/
+
 				/*// Creates and gameobject (cube) and makes it green, 
 				// used to mark out the user touch position
 				GameObject pos = GameObject.CreatePrimitive(PrimitiveType.Cube);
