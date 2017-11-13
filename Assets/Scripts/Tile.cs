@@ -18,11 +18,12 @@ public class Tile : MonoBehaviour {
 	public Tile tile_upper_left;
 	public Tile tile_lower_right;
 	public Tile tile_lower_left;
-	public List<Tile> adjacent_tiles = new List<Tile> ();
-	public int adjacent_mines = 0;
+	public List<Tile> nearby_tiles = new List<Tile> ();
+	public int nearby_mines = 0;
 
 	public TextMesh display_text;
 	public string state = "idle";
+
 
 	// Use this for initialization
 	void Start () {
@@ -44,25 +45,25 @@ public class Tile : MonoBehaviour {
 		if(InBounds(Grid.tiles_all, ID + tiles_per_row + 1) && (ID + tiles_per_row + 1) % tiles_per_row != 0) { 
 			tile_upper_right = Grid.tiles_all[ID + tiles_per_row + 1];
 		}
-		if(InBounds(Grid.tiles_all, ID + tiles_per_row - 1) &&     ID % tiles_per_row != 0) { 
+		if(InBounds(Grid.tiles_all, ID + tiles_per_row - 1) && ID % tiles_per_row != 0) { 
 			tile_upper_left  = Grid.tiles_all[ID + tiles_per_row - 1];
 		}
 		if(InBounds(Grid.tiles_all, ID - tiles_per_row + 1) && (ID+1) % tiles_per_row != 0) { 
 			tile_lower_right = Grid.tiles_all[ID - tiles_per_row + 1];
 		}
-		if(InBounds(Grid.tiles_all, ID - tiles_per_row - 1) &&     ID % tiles_per_row != 0) { 
+		if(InBounds(Grid.tiles_all, ID - tiles_per_row - 1) && ID % tiles_per_row != 0) { 
 			tile_lower_left  = Grid.tiles_all[ID - tiles_per_row - 1]; 
 		}
 
-		if(tile_upper){adjacent_tiles.Add (tile_upper);}
-		if(tile_lower){adjacent_tiles.Add (tile_lower);}
-		if(tile_left){adjacent_tiles.Add (tile_left);}
-		if(tile_right){adjacent_tiles.Add (tile_right);}
+		if(tile_upper){nearby_tiles.Add (tile_upper);}
+		if(tile_lower){nearby_tiles.Add (tile_lower);}
+		if(tile_left){nearby_tiles.Add (tile_left);}
+		if(tile_right){nearby_tiles.Add (tile_right);}
 
-		if(tile_upper_left){adjacent_tiles.Add (tile_upper_left);}
-		if(tile_upper_right){adjacent_tiles.Add (tile_upper_right);}
-		if(tile_lower_left){adjacent_tiles.Add (tile_lower_left);}
-		if(tile_lower_right){adjacent_tiles.Add (tile_lower_right);}
+		if(tile_upper_left){nearby_tiles.Add (tile_upper_left);}
+		if(tile_upper_right){nearby_tiles.Add (tile_upper_right);}
+		if(tile_lower_left){nearby_tiles.Add (tile_lower_left);}
+		if(tile_lower_right){nearby_tiles.Add (tile_lower_right);}
 
 		CountMines ();
 	}
@@ -76,13 +77,13 @@ public class Tile : MonoBehaviour {
 	}
 
 	void CountMines(){
-		foreach (Tile current_tile in adjacent_tiles) {
+		foreach (Tile current_tile in nearby_tiles) {
 			if (current_tile.is_mined) {
-				adjacent_mines += 1;
+				nearby_mines += 1;
 			}
 		}
-		display_text.text = adjacent_mines.ToString ();
-		if (adjacent_mines <= 0) {
+		display_text.text = nearby_mines.ToString ();
+		if (nearby_mines <= 0) {
 			display_text.text = "";
 		}
 	}
@@ -92,9 +93,17 @@ public class Tile : MonoBehaviour {
 			state = "flagged";
 			display_flag.GetComponent<Renderer>().enabled = true;
 			display_flag.GetComponent<Renderer> ().material.color = Color.red;
+			Grid.mines_remaining -= 1;
+			if (is_mined) {
+				Grid.mines_marked_correct += 1;
+			}
 		}else if(state == "flagged"){
 			state = "idle";
 			display_flag.GetComponent<Renderer>().enabled = false;
+			Grid.mines_remaining += 1;
+			if (is_mined) {
+				Grid.mines_marked_correct -= 1;
+			}
 		}
 	}
 
@@ -103,8 +112,9 @@ public class Tile : MonoBehaviour {
 			state = "uncovered";
 			display_text.GetComponent<Renderer>().enabled = true;
 			GetComponent<Renderer> ().material.color = Color.green;
-			if (adjacent_mines == 0) {
-				UncoverAdjacentTiles ();
+			Grid.tiles_uncovered += 1;
+			if (nearby_mines == 0) {
+				UncoverNearbyTiles ();
 			}
 		} else{
 			Explode();
@@ -115,13 +125,14 @@ public class Tile : MonoBehaviour {
 		state = "uncovered";
 		display_text.GetComponent<Renderer> ().enabled = true;
 		GetComponent<Renderer> ().material.color = Color.green;
+		Grid.tiles_uncovered += 1;
 	}
 
-	void Explode(){
+	public void Explode(){
 		state = "detonated";
 		GetComponent<Renderer> ().material.color = Color.red;
 		foreach (Tile current_tile in Grid.tiles_mined) {
-			current_tile.ExplodeAll ();
+			current_tile.ExplodeAll (); 
 		}
 		StartCoroutine(Wait ());
 		Restart ();
@@ -132,19 +143,19 @@ public class Tile : MonoBehaviour {
 		GetComponent<Renderer> ().material.color = Color.red;
 	}
 
-	IEnumerator Wait(){
+	public IEnumerator Wait(){
 		yield return new WaitForSeconds(5.0f);
 	}
 
-	void Restart(){
+	public void Restart(){
 		SceneManager.LoadScene ("animation-scene");
 	}
 
-	private void UncoverAdjacentTiles(){
-		foreach (Tile current_tile in adjacent_tiles) {
-			if (!current_tile.is_mined && current_tile.state == "idle" && current_tile.adjacent_mines == 0) {
+	private void UncoverNearbyTiles(){
+		foreach (Tile current_tile in nearby_tiles) {
+			if (!current_tile.is_mined && current_tile.state == "idle" && current_tile.nearby_mines == 0) {
 				current_tile.UncoverTile ();
-			} else if (!current_tile.is_mined && current_tile.state == "idle" && current_tile.adjacent_mines > 0) {
+			} else if (!current_tile.is_mined && current_tile.state == "idle" && current_tile.nearby_mines > 0) {
 				current_tile.UncoverTileExternal ();
 			}
 		}

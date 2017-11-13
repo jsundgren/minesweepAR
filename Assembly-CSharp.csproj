@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\ARGUI.cs" />
      <Compile Include="Assets\Scripts\CameraFocus.cs" />
+     <Compile Include="Assets\Scripts\CountTime.cs" />
      <Compile Include="Assets\Scripts\Grid.cs" />
      <Compile Include="Assets\Scripts\HUDFPS.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
