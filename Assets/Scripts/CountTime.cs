@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class CountTime : MonoBehaviour {
 	public TextMesh num_time;
-	private float game_time = 0;
+	public float game_time = 0;
 	public float set_time = 100;
 	public Text finished_text;
 

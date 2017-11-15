@@ -29,7 +29,11 @@ public class Tile : MonoBehaviour {
 	void Start () {
 		display_flag.GetComponent<Renderer>().enabled = false;
 		display_text.GetComponent<Renderer>().enabled = false;
+		CheckTiles ();
+		CountMines ();
+	}
 
+	public void CheckTiles() {
 		if(InBounds(Grid.tiles_all, ID + tiles_per_row)) { 
 			tile_upper = Grid.tiles_all[ID + tiles_per_row];
 		}
@@ -64,8 +68,6 @@ public class Tile : MonoBehaviour {
 		if(tile_upper_right){nearby_tiles.Add (tile_upper_right);}
 		if(tile_lower_left){nearby_tiles.Add (tile_lower_left);}
 		if(tile_lower_right){nearby_tiles.Add (tile_lower_right);}
-
-		CountMines ();
 	}
 	
 	private bool InBounds(Tile[] input_array, int target_ID){
