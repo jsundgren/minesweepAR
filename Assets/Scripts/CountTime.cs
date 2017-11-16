@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class CountTime : MonoBehaviour {
 	public TextMesh num_time;
-	public float game_time = 0;
-	public float set_time = 100;
+	float game_time = 0;
+	public float set_time = 150;
 	public Text finished_text;
 
 	void Start(){
@@ -19,7 +19,7 @@ public class CountTime : MonoBehaviour {
 		game_time -= Time.deltaTime;
 		num_time.text = game_time.ToString ("f0");
 		endTime ();
-		if (game_time < 10) {
+		if (game_time < 15) {
 			num_time.color = Color.red;
 		}
 	}

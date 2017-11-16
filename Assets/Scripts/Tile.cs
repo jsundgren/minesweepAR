@@ -24,6 +24,14 @@ public class Tile : MonoBehaviour {
 	public TextMesh display_text;
 	public string state = "idle";
 
+	/*Color one = new Color(0,1.0f,242,1.0f);
+	Color two = new Color(5,120,4,1.0f);
+	Color three = new Color(233,9,14,1.0f);
+	Color four = new Color(0,2,124,1.0f);
+	Color five = new Color(123,0,5,1.0f);
+	Color six = new Color(11,144,106,1.0f);
+	Color seven = Color.black;
+	Color eight = new Color(128,128,128,1.0f);*/
 
 	// Use this for initialization
 	void Start () {
@@ -113,7 +121,7 @@ public class Tile : MonoBehaviour {
 		if (!is_mined) {
 			state = "uncovered";
 			display_text.GetComponent<Renderer>().enabled = true;
-			GetComponent<Renderer> ().material.color = Color.green;
+			GetComponent<Renderer> ().material.color = Color.grey;
 			Grid.tiles_uncovered += 1;
 			if (nearby_mines == 0) {
 				UncoverNearbyTiles ();
@@ -126,7 +134,7 @@ public class Tile : MonoBehaviour {
 	private void UncoverTileExternal(){
 		state = "uncovered";
 		display_text.GetComponent<Renderer> ().enabled = true;
-		GetComponent<Renderer> ().material.color = Color.green;
+		GetComponent<Renderer> ().material.color = Color.grey;
 		Grid.tiles_uncovered += 1;
 	}
 
@@ -152,6 +160,7 @@ public class Tile : MonoBehaviour {
 	public void Restart(){
 		SceneManager.LoadScene ("animation-scene");
 	}
+
 
 	private void UncoverNearbyTiles(){
 		foreach (Tile current_tile in nearby_tiles) {

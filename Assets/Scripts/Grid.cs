@@ -45,6 +45,11 @@ public class Grid : MonoBehaviour {
 			}
 			number_of_mines = number_of_mines + counter;
 			mines_remaining = number_of_mines;
+			number_of_tiles = number_of_tiles + 16;
+			if (win_count == 2) {
+				number_of_tiles++;
+				tiles_per_row++;
+			}
 			mines_marked_correct = 0;
 			tiles_uncovered = 0;
 			mines_remaining = 0;
@@ -66,13 +71,13 @@ public class Grid : MonoBehaviour {
 				}
 				x_offset = 0;
 			}
-			Tile new_tile = Instantiate (tile_prefab,new Vector3(transform.position.x + (x_offset-0.375f), 0.1f, transform.position.z + (z_offset-0.225f)), transform.rotation);
+			Tile new_tile = Instantiate (tile_prefab,new Vector3(transform.position.x + (x_offset-0.375f), 0.05f, transform.position.z + (z_offset-0.225f)), transform.rotation);
 			new_tile.ID = tiles_created;
 			new_tile.tiles_per_row = tiles_per_row;
 			tiles_all [tiles_created] = new_tile;
 		}
 		AssignMines ();
-		counter = counter + 4;
+		counter = counter + 8;
 	}
 
 	void AssignMines(){
