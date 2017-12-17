@@ -18,8 +18,8 @@ public class Grid : MonoBehaviour {
 	public static int mines_remaining = 0;
 	public static int mines_marked_correct = 0;
 	public static int tiles_uncovered = 0;
-	public int counter = 0;
-	int win_count = 0;
+	//public int counter = 0;
+	//int win_count = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -32,15 +32,15 @@ public class Grid : MonoBehaviour {
 
 	void Update(){
 		if (mines_remaining == 0 && mines_marked_correct == number_of_mines || (tiles_uncovered == number_of_tiles - number_of_mines)) {
-			win_count++;
-			if (win_count == 4){
+			//win_count++;
+			//if (win_count == 4){
 				finished_text.text = "W I N N E R";
 				finished_text.alignment = TextAnchor.MiddleCenter;
 				StartCoroutine(Wait ());
 				Restart ();
-			}
+			//}
 
-			for (int i = 0; i < number_of_tiles; i++) {
+			/*for (int i = 0; i < number_of_tiles; i++) {
 				Destroy (tiles_all [i].gameObject);
 			}
 			number_of_mines = number_of_mines + counter;
@@ -54,7 +54,7 @@ public class Grid : MonoBehaviour {
 			tiles_uncovered = 0;
 			mines_remaining = 0;
 			CreateTiles ();
-			GetComponent<Tile> ().CheckTiles ();
+			GetComponent<Tile> ().CheckTiles ();*/
 		}
 	}
 
@@ -77,7 +77,7 @@ public class Grid : MonoBehaviour {
 			tiles_all [tiles_created] = new_tile;
 		}
 		AssignMines ();
-		counter = counter + 8;
+		//counter = counter + 8;
 	}
 
 	void AssignMines(){

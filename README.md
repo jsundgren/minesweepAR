@@ -1,2 +1,2 @@
 # minesweepAR
-AR Minesweeper! Made in Unity with Vuforia SDK.
+AR Maze game! Made in Unity with Vuforia SDK.

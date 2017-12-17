@@ -4,43 +4,38 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class touchInput : MonoBehaviour {
-	private float hold_time = 1.0f;
-	private float count_time = 0.0f;
-	//Vector3 plane_point;
-	float mag_value = 1.0f;
+	Vector3 planePoint;
+	public GameObject moveCube;
+	public GameObject field;
+	public Text cubeText;
 
+	void Start() {
+		cubeText = GameObject.Find ("Cube").GetComponent<Text> ();
+		moveCube = Instantiate (moveCube, new Vector3 (-0.5f, 0f, 0f), transform.rotation);
+		moveCube.GetComponent<Renderer> ().material.color = Color.red;
+		field = Instantiate(field, new Vector3(0f,0.05f,0f), transform.rotation);
+		field.GetComponent<Renderer> ().material.color = Color.grey;
+	}
 
-	void Start() {}
-
-	// Update is called once per frame
 	void Update () {
-		// Attach this script to a trackable object
-		// Create a plane that matches the target plane
 		Plane target_plane = new Plane (transform.up, transform.position);
-		// When user touch the screen
 		foreach (Touch touch in Input.touches) {
-			count_time += touch.deltaTime;
 			Ray ray = Camera.main.ScreenPointToRay (touch.position);
 			float dist = 0.0f;
 			target_plane.Raycast (ray, out dist);
+			planePoint = ray.GetPoint (dist);
 			RaycastHit hit;
-			//plane_point = ray.GetPoint (dist);
-			if (touch.phase == TouchPhase.Ended && count_time < hold_time) {
+			if(touch.phase == TouchPhase.Moved){
 				if (Physics.Raycast (ray, out hit, 2)) {
-					if (hit.collider != null && hit.transform.GetComponent<Tile> ().state == "idle") {
-						hit.transform.GetComponent<Tile> ().UncoverTile ();
-						count_time = 0;
-					}
-				}
-			}else if(touch.phase == TouchPhase.Stationary || (touch.phase == TouchPhase.Moved && touch.deltaPosition.magnitude < mag_value)){
-				if (Physics.Raycast (ray, out hit, 2)) {
-					if (hit.collider != null && count_time >= hold_time) {
-						hit.transform.GetComponent<Tile> ().SetFlag ();
-						count_time = 0;
+					if (hit.collider != null && hit.collider.gameObject == moveCube) {
+						moveCube.transform.position = new Vector3(planePoint.x, 0, planePoint.z);
 					}
 				}
 			}
 		}
+		float tX = planePoint.x;
+		float tZ = planePoint.z;
+		cubeText.text = "tX: " + tX.ToString () + "\n" + "tZ: " + tZ.ToString ();
 	}
 }
 
